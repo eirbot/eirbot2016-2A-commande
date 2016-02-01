@@ -10,9 +10,9 @@ using namespace HAL;
 using namespace Stream;
 
 struct MySettings : public DefaultUARTStreamSettings {
-    static constexpr auto& uart = SERIAL_USART3;
-    static constexpr auto& tx = B10;
-    static constexpr auto& rx = B11;
+    static constexpr auto& uart = SERIAL_USART1;
+    static constexpr auto& tx = B6;
+    static constexpr auto& rx = B7;
 
     static constexpr auto baudrate = 9600;
     static constexpr auto parity = UART::Parity::NONE;

@@ -10,9 +10,9 @@ using namespace HAL;
 using namespace Stream;
 
 struct MySettings : public DefaultUARTStreamSettings {
-    static constexpr auto& uart = SERIAL_USART1;
-    static constexpr auto& tx = B6;
-    static constexpr auto& rx = B7;
+    static constexpr auto& uart = SERIAL_USART3;
+    static constexpr auto& tx = B10;
+    static constexpr auto& rx = B11;
 
     static constexpr auto baudrate = 9600;
     static constexpr auto parity = UART::Parity::NONE;
@@ -35,9 +35,9 @@ int main(int, char**) {
 //      UART::init(myuart1,B10,B11,settings);
 
 
-//      TIMER::Settings timer9_settings;
-//      timer9_settings.period = 1000000; //us
-//      TIMER::init(TIMER9, timer9_settings);
+     TIMER::Settings timer9_settings;
+     timer9_settings.period = 10000; //us
+     TIMER::init(TIMER9, timer9_settings);
 //    //  TIMER::init(TIMER12, timer9_settings);
 
 //      PWM::Settings pwm1_settings;
@@ -55,10 +55,10 @@ int main(int, char**) {
   settings.pull = GPIO::Pull::DOWN;
 
 
-  TIMER::Settings timer_settings;
-  timer_settings.period = 5000;
-  TIMER::init(TIMER2,timer_settings);
-  TIMER::start(TIMER2);
+  // TIMER::Settings timer_settings;
+  // timer_settings.period = 5000;
+  // TIMER::init(TIMER2,timer_settings);
+  // TIMER::start(TIMER2);
 
 
 
@@ -70,22 +70,22 @@ int main(int, char**) {
   
 
 
-//  TIMER::start(TIMER9);
+  TIMER::start(TIMER9);
 //  PWM::setPulseWidth(TIMER9_CH2, 1000);
   
 
-   TIMER::setOverflowHandler(TIMER2,[](){
-    GPIO::toggle(D7);
+   // TIMER::setOverflowHandler(TIMER2,[](){
+   //  GPIO::toggle(D7);
 
 
 
-   });
+   // });
 
    while(1) {
-//       GPIO::toggle(D7);
-//       auto& timer_handle = Private::get_timer_cube_handle<9>();
-//       u32 var = __HAL_TIM_GetCounter(&timer_handle);
-//     io << var << "\n\r";
+       GPIO::toggle(D7);
+       auto& timer_handle = Private::get_timer_cube_handle<9>();
+       u32 var = __HAL_TIM_GetCounter(&timer_handle);
+       io << var << "\n\r";
    }
     //   UART::write(myuart1, (u8*)"Hello\n\r", 7);
 

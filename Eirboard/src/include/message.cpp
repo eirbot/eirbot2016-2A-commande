@@ -121,7 +121,7 @@ bool Message::isData()
 
 bool Message::isParity()
 {
-	if (function_sum (m_data) == m_parity)
+	if (dataParity (m_data) == m_parity)
 		return true;
 	else
 		return false;

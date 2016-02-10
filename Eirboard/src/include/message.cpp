@@ -13,11 +13,11 @@ class Message
 	int getBoardID();
 	void setFunction(int msg);
 	int getFunction();
-	void (bool board);
+	void boolBoard(bool board);
 	bool isBoard();
-	void (bool function);
+	void boolFunction(bool function);
 	bool isFunction();
-	void (bool parity);
+	void boolParity(bool parity);
 	bool isParity();
 
 	private:
@@ -38,24 +38,52 @@ Message::Message()
 	m_parity = false;
 }
 
+void Message::setBoardID(int boardID)
+{
+	m_boardID = boardID;
+}
+
 int Message::getBoardID()
 {
+	return m_boardID;
+}
 
+void Message::setFunction(int msg)
+{
+	m_msg = msg;
 }
 
 int Message::getFunction()
 {
-
+	return m_msg
 }
+
+void Message::boolBoard(bool board)
+{
+	m_board = board;
+}
+
 bool Message::isBoard()
 {
-
+	return m_board;
 }
+
+void Message::boolFunction(bool function)
+{
+	m_function = function
+}
+
 bool Message::isFunction()
 {
-
+	return m_function;
 }
+
+void Message::boolParity(bool parity)
+{
+	m_parity = parity;
+}
+
 bool Message::isParity()
 {
-
+	return m_parity;
 }

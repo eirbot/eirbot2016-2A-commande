@@ -114,6 +114,10 @@ bool Message::isData()
 			return true;
 			break;
 
+		case "100111010100000" : // A modifier
+			return true;
+			break;		
+
 		default :
 			return false;
 	}	

@@ -6,36 +6,35 @@
 
 class Message
 {
-	public:
-	
+public:
 	Message();
 	void setBoardID(int boardID);
 	int getBoardID();
-	void setFunction(int msg);
+	void setFunction(int function);
 	int getFunction();
-	void boolBoard(bool board);
+	void setData(int data);
+	int getData();
+	void setParity(int parity);
+	int getParity();
+
 	bool isBoard();
-	void boolFunction(bool function);
 	bool isFunction();
-	void boolParity(bool parity);
+	bool isData();
 	bool isParity();
 
-	private:
-	
+private:
 	int m_boardID;
-	int m_msg;
-	bool m_board:
-	bool m_function;
-	bool m_parity;
+	int m_function;
+	int m_data;
+	int m_parity;
 };
 
 Message::Message()
 {
 	m_boardID = 0;
-	m_msg = 0;
-	m_board = false;
-	m_function = false;
-	m_parity = false;
+	m_function = 0;
+	m_data = 0;
+	m_parity = 0;
 }
 
 void Message::setBoardID(int boardID)
@@ -48,42 +47,82 @@ int Message::getBoardID()
 	return m_boardID;
 }
 
-void Message::setFunction(int msg)
+void Message::setFunction(int function)
 {
-	m_msg = msg;
+	m_function = function;
 }
 
 int Message::getFunction()
 {
-	return m_msg
-}
-
-void Message::boolBoard(bool board)
-{
-	m_board = board;
-}
-
-bool Message::isBoard()
-{
-	return m_board;
-}
-
-void Message::boolFunction(bool function)
-{
-	m_function = function
-}
-
-bool Message::isFunction()
-{
 	return m_function;
 }
 
-void Message::boolParity(bool parity)
+void Message::setData(int data)
+{
+	m_data = data;
+}
+
+int Message::getData()
+{
+	return m_data;
+}
+
+void Message::setParity(int parity)
 {
 	m_parity = parity;
 }
 
+int Message::getParity()
+{
+	return m_parity
+}
+
+bool Message::isBoard()
+{
+	if (m_boardID = "0010") // A modifier
+		return true;
+	else
+		return false;
+}
+
+bool Message::isFunction()
+{
+	switch (m_function)
+	{
+		case "000000000000001" : // A modifier
+			return true;
+			break;
+
+		case "000000000000010" : // A modifier
+			return true;
+			break;
+
+		default :
+			return false;
+	}
+}
+
+bool Message::isData()
+{
+	switch (m_data)
+	{
+		case "000010100101001" : // A modifier
+			return true;
+			break;
+
+		case "000011000100010" : // A modifier
+			return true;
+			break;
+
+		default :
+			return false;
+	}	
+}
+
 bool Message::isParity()
 {
-	return m_parity;
+	if (function_sum (m_data) == m_parity)
+		return true;
+	else
+		return false;
 }

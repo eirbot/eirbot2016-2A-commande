@@ -6,9 +6,11 @@
 
 #pragma once
 
+#include <base/integer.hpp>
+
 // Convert a binary string to a binary int
-static inline u32 s2bin(const char *s);
+u32 s2bin(const char *s);
 
-static inline u32 bitsCount (u32 number);
+u32 bitsCount (u32 number);
 
-static inline u32 dataParity (u32 data);
+u32 bitsParity (u32 data);

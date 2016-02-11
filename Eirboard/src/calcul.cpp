@@ -4,10 +4,10 @@
 /*                                                   */
 /*****************************************************/
 
-#include "calcul.hpp"
+#include "include/calcul.hpp"
 
 // Convert a binary string to a binary int
-static inline u32 s2bin(const char *s)
+u32 s2bin(const char *s)
 {
     u32 i = 0;
     while (*s)
@@ -18,19 +18,18 @@ static inline u32 s2bin(const char *s)
     return i;
 }
 
-static inline u32 bitsCount (u32 number)
+u32 bitsCount (u32 n)
 {
-    u32 count = 0;
-    while (number != 0)
-    {
-        if (number & 1 << 1)
-            count++;
-        number = number >> 1;
+    u32 c = 0;
+    while(n != 0){
+        u32 a = n & -n;
+        n = n ^ a;
+        c++;
     }
-    return count;
+    return c;
 }
 
-static inline u32 dataParity (u32 data)
+u32 bitsParity (u32 data)
 {
     return bitsCount (data) & 1;
 }

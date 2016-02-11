@@ -1,18 +1,32 @@
+/*****************************************************/
+/*                Nucleo Architecture                */
+/*                    STM32F429ZI                    */
+/*                                                   */
+/*****************************************************/
+
 #include <hal/gpio.hpp>
 #include <hal/timer.hpp>
 #include <hal/pwm.hpp>
 #include <hal/uart.hpp>
 
-#include <stream/hal/uart_stream.hpp>
+#include "include/calcul.hpp"
+#include "include/message.hpp"
 
+#define LED_1 B0
+#define LED_2 B7
+#define LED_3 B14
 
 using namespace HAL;
+
+// Gestion De l'objet UART/USART
+#include <stream/hal/uart_stream.hpp>
+
 using namespace Stream;
 
 struct MySettings : public DefaultUARTStreamSettings {
     static constexpr auto& uart = SERIAL_USART3;
-    static constexpr auto& tx = B10;
-    static constexpr auto& rx = B11;
+    static constexpr auto& tx = D8;
+    static constexpr auto& rx = D9;
 
     static constexpr auto baudrate = 9600;
     static constexpr auto parity = UART::Parity::NONE;
@@ -20,74 +34,67 @@ struct MySettings : public DefaultUARTStreamSettings {
     static constexpr auto word_size = 8;
 };
 
-Stream::FormattedUARTStream<MySettings> io;
-
-int main(int, char**) {
-//    auto& myuart1 = SERIAL_USART3;
-
-//    UART::Settings settings;
-//      settings.baudrate=9600;
-//      settings.parity=UART::Parity::NONE;
-//      settings.stop_bit=UART::StopBit::ONE_BIT;
-//      settings.word_size=8;
+// Nom du format Stream de l'UART
+Stream::FormattedUARTStream<MySettings> UART_1;
+Stream::UARTStream<MySettings> UART_2;
 
 
-//      UART::init(myuart1,B10,B11,settings);
+// Début du programme
+int main(int, char**)
+{
 
-
-     TIMER::Settings timer9_settings;
-     timer9_settings.period = 10000; //us
-     TIMER::init(TIMER9, timer9_settings);
-//    //  TIMER::init(TIMER12, timer9_settings);
-
-//      PWM::Settings pwm1_settings;
-//      pwm1_settings.polarity = PWM::Polarity::HIGH;
-//      PWM::init(TIMER9_CH2, E6, pwm1_settings);
-
-    //  PWM::Settings pwm2_settings;
-    //  pwm2_settings.polarity = PWM::Polarity::LOW;
-    //  PWM::init(TIMER12_CH2, B15, pwm2_settings);
-
-
+  // Initialisation des parammètres des GPIOs
   GPIO::Settings settings;
   settings.mode = GPIO::Mode::OUTPUT;
   settings.output_mode = GPIO::OutputMode::PUSH_PULL;
   settings.pull = GPIO::Pull::DOWN;
 
-
-  // TIMER::Settings timer_settings;
-  // timer_settings.period = 5000;
-  // TIMER::init(TIMER2,timer_settings);
-  // TIMER::start(TIMER2);
-
-
-
-   GPIO::init(D7,settings);
-  //  GPIO::init(B15,settings);
-
-  //TIMER::start(TIMER12);
-  //PWM::setPulseWidth(TIMER12_CH2, 10);
+  // Initialisation des GPIOs à l'aide des parammètres
+  GPIO::init (LED_1,settings);
+  GPIO::init (LED_2,settings);
+  GPIO::init (LED_3,settings);
   
+  // Utilisation des GPIOs: changement d'états
+  GPIO::toggle (LED_1);
+  GPIO::toggle (LED_2);
+  GPIO::toggle (LED_3);
 
+  // Création du message
+  Message sending;
+  sending.setBoardID ("1001");
+  sending.setFunction ("100101");
+  sending.setData ("00001000000100000001");
+  Message receiving;
+  receiving.receiveMessage (s2bin ("00011001011000010000001000000011"));
 
-  TIMER::start(TIMER9);
-//  PWM::setPulseWidth(TIMER9_CH2, 1000);
-  
+  while(1)
+  {
+    // u32 a = s2bin ("1000001");
+    // UART_1 << s2bin ("1000001") << " " << bitsCount (a) << " " << bitsParity (a) << "\n\r";
+    // UART_1 << "Sending message : " << sending.sendMessage () << " || Verification : " << s2bin ("00011001011000010000001000000011") << "\n\r";
+    // UART_1 << "Receiving message : " << receiving.getBoardID () << " = " << s2bin ("0001") << " || " << receiving.getFunction () << " = " << s2bin ("100101") << " || " << receiving.getParityFunction () << " = " << 1 << " || " << receiving.getData () << " = " << s2bin ("00001000000100000001") << " || " << receiving.getParityData () << " = " << 1 << "\n\r";
+    // UART_1 << "\n\r";    
 
-   // TIMER::setOverflowHandler(TIMER2,[](){
-   //  GPIO::toggle(D7);
+    // u32 var = ((u32)'b'<<24) + ((u32)'\r'<<16) + ((u32)'a'<<8) + (u32)'1';
+    // UART_2.write((u8*) &var, sizeof (var));
+    // UART_2.write((u8*) "\n\r", 2);
+    // UART_2.write((u8*) "--------------------", 20);
+    // UART_2.write((u8*) "\n\r", 2);
+    // u32 var1 = ((u32)'b'<<24) + ((u32)'\r'<<16) + ((u32)'a'<<8) + (u32)'8';
+    // UART_2.write((u8*) &var1, sizeof (var1));
+    // UART_2.write((u8*) "\n\r", 2);
+    // UART_2.write((u8*) "--------------------", 20);
+    // UART_2.write((u8*) "\n\r", 2);
 
-
-
-   // });
-
-   while(1) {
-       GPIO::toggle(D7);
-       auto& timer_handle = Private::get_timer_cube_handle<9>();
-       u32 var = __HAL_TIM_GetCounter(&timer_handle);
-       io << var << "\n\r";
-   }
-    //   UART::write(myuart1, (u8*)"Hello\n\r", 7);
+    u32 buffer;
+    UART_2.read((u8*) &buffer, sizeof (buffer));
+    receiving.receiveMessage (buffer);    
+    UART_1 << "Receiving message : " << receiving.sendMessage () << " || Verification : " << buffer << "\n\r";
+    UART_2.write((u8*) &buffer, sizeof (buffer));
+    UART_2.write((u8*) "\n\r", 2);
+    UART_2.write((u8*) "--------------------", 20);
+    UART_2.write((u8*) "\n\r", 2);
+  }
 
   return 0;
  
